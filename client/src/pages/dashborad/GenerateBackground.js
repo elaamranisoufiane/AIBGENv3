@@ -68,42 +68,74 @@ const showAddCreditsButton = await getUsername().then((result) => {
 
 
 //get Plans for Month subscription
-const getPlans = async () => {
-    try {
-        const response = await axios.get('/api/getAllProductss', {
-            withCredentials: true,
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Login failed:", error);
-        return false;
-    }
-};
+// const getPlans = async () => {
+//     try {
+//         const response = await axios.get('/api/getAllProductss', {
+//             withCredentials: true,
+//         });
+//         return response.data;
+//     } catch (error) {
+//         console.error("Login failed:", error);
+//         return false;
+//     }
+// };
 
-const plans = await getPlans().then((result) => {
-    return result;
-});
+// const plans = await getPlans().then((result) => {
+//     return result;
+// });
 
-//get Plans for Month subscription
-const getPlansPayment = async () => {
-    try {
-        const response = await axios.get('/api/getAllProductsspayment', {
-            withCredentials: true,
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Login failed:", error);
-        return false;
-    }
-};
+// //get Plans for Month subscription
+// const getPlansPayment = async () => {
+//     try {
+//         const response = await axios.get('/api/getAllProductsspayment', {
+//             withCredentials: true,
+//         });
+//         return response.data;
+//     } catch (error) {
+//         console.error("Login failed:", error);
+//         return false;
+//     }
+// };
 
-const plansPayment = await getPlansPayment().then((result) => {
-    return result;
-});
+// const plansPayment = await getPlansPayment().then((result) => {
+//     return result;
+// });
 
 
 
 const GenerateBackground = () => {
+    const [plans, setPlans] = useState([]);
+    const [plansPayment, setPlansPayment] = useState([]);
+
+    useEffect(() => {
+        const fetchPlans = async () => {
+            try {
+                const response = await axios.get('/api/getAllProductss', {
+                    withCredentials: true,
+                });
+                setPlans(response.data);
+            } catch (error) {
+                console.error("Failed to fetch plans:", error);
+            }
+        };
+
+        fetchPlans();
+    }, []);
+
+    useEffect(() => {
+        const fetchPlansPayment = async () => {
+            try {
+                const response = await axios.get('/api/getAllProductsspayment', {
+                    withCredentials: true,
+                });
+                setPlansPayment(response.data);
+            } catch (error) {
+                console.error("Failed to fetch plans payment:", error);
+            }
+        };
+
+        fetchPlansPayment();
+    }, []);
 
     const [showUpgrade, setShowUpgrade] = useState(false);
     const [isLoading, setIsLoading] = useState(null);
@@ -192,7 +224,7 @@ const GenerateBackground = () => {
     //save the new removed background image
     const handleUpload = async () => {
         try {
-            if (isProS === 'true' && credits > 0) {
+            if (isProS === 'true' && (credits > 0 || role == 'admin')) {
                 checkpass = true;
             } else if (credits > 0) {
                 checkpass = true;
@@ -267,7 +299,7 @@ const GenerateBackground = () => {
 
     //genrate BG
     useEffect(() => {
-        if (isProS === 'true' && credits > 0) {
+        if (isProS === 'true' && (credits > 0 || role == 'admin')) {
             checkpass = true;
         } else if (credits > 0) {
             checkpass = true;

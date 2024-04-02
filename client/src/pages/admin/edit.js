@@ -3,25 +3,44 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 
-//get Plans for Month subscription
-const getPlans = async () => {
-    try {
-        const response = await axios.get('/api/getAllProductss', {
-            withCredentials: true,
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Login failed:", error);
-        return false;
-    }
-};
+// //get Plans for Month subscription
+// const getPlans = async () => {
+//     try {
+//         const response = await axios.get('/api/getAllProductss', {
+//             withCredentials: true,
+//         });
+//         return response.data;
+//     } catch (error) {
+//         console.error("Login failed:", error);
+//         return false;
+//     }
+// };
 
 
-const plans = await getPlans().then((result) => {
-    return result;
-});
+// const plans = await getPlans().then((result) => {
+//     return result;
+// });
 
 export default function Edit() {
+    const [plans, setPlans] = useState([]);
+
+    useEffect(() => {
+        const fetchPlans = async () => {
+            try {
+                const response = await axios.get('/api/getAllProductss', {
+                    withCredentials: true,
+                });
+                setPlans(response.data);
+            } catch (error) {
+                console.error("Failed to fetch plans:", error);
+            }
+        };
+
+        fetchPlans();
+    }, []);
+
+
+
     const [registerUsername, setRegisterUsername] = useState('');
     const [registerPassword, setRegisterPassword] = useState('');
     const [registerPassword2, setRegisterPassword2] = useState('');

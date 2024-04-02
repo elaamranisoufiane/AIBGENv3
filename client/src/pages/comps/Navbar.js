@@ -58,42 +58,75 @@ const handleLogout = () => {
 
 
 //get Plans for Month subscription
-const getPlans = async () => {
-    try {
-        const response = await axios.get('/api/getAllProductss', {
-            withCredentials: true,
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Login failed:", error);
-        return false;
-    }
-};
+// const getPlans = async () => {
+//     try {
+//         const response = await axios.get('/api/getAllProductss', {
+//             withCredentials: true,
+//         });
+//         return response.data;
+//     } catch (error) {
+//         console.error("Login failed:", error);
+//         return false;
+//     }
+// };
 
-const plans = await getPlans().then((result) => {
-    return result;
-});
+// const plans = await getPlans().then((result) => {
+//     return result;
+// });
 
-//get Plans for Month subscription
-const getPlansPayment = async () => {
-    try {
-        const response = await axios.get('/api/getAllProductsspayment', {
-            withCredentials: true,
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Login failed:", error);
-        return false;
-    }
-};
+// //get Plans for Month subscription
+// const getPlansPayment = async () => {
+//     try {
+//         const response = await axios.get('/api/getAllProductsspayment', {
+//             withCredentials: true,
+//         });
+//         return response.data;
+//     } catch (error) {
+//         console.error("Login failed:", error);
+//         return false;
+//     }
+// };
 
-const plansPayment = await getPlansPayment().then((result) => {
-    return result;
-});
+// const plansPayment = await getPlansPayment().then((result) => {
+//     return result;
+// });
 
 let credits = null;
 
 export default function NavBar() {
+    const [plans, setPlans] = useState([]);
+    const [plansPayment, setPlansPayment] = useState([]);
+
+    useEffect(() => {
+        const getPlans = async () => {
+            try {
+                const response = await axios.get('/api/getAllProductss', {
+                    withCredentials: true,
+                });
+                setPlans(response.data);
+            } catch (error) {
+                console.error("Login failed:", error);
+            }
+        };
+
+        getPlans();
+    }, []);
+
+    useEffect(() => {
+        const getPlansPayment = async () => {
+            try {
+                const response = await axios.get('/api/getAllProductsspayment', {
+                    withCredentials: true,
+                });
+                setPlansPayment(response.data);
+            } catch (error) {
+                console.error("Login failed:", error);
+            }
+        };
+
+        getPlansPayment();
+    }, []);
+
 
     //dispaly the user name
     const [showProfile, setShowProfile] = useState(false);
@@ -175,16 +208,16 @@ export default function NavBar() {
                                 {showTools ? (
                                     <ul className="absolute top-full left-1/2 -translate-x-1/2 bg-white border border-gray-300 mt-1 py-2 px-3 rounded shadow-md z-50 w-52">
                                         <li>
-                                            <a className="hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100 lg:text-base lg:font-normal" href="/remove-background-">Remove Background</a>
+                                            <a className="hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100 lg:text-base lg:font-normal" href="/remove-background-pro">Remove Background</a>
                                         </li>
                                         <li>
-                                            <a className="hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100 lg:text-base lg:font-normal" href="/generate-background-">Generate Background</a>
+                                            <a className="hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100 lg:text-base lg:font-normal" href="/generate-background-pro">Generate Background</a>
                                         </li>
                                         <li>
-                                            <a className="hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100 lg:text-base lg:font-normal" href="/restore-photos-">Restore Photos</a>
+                                            <a className="hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100 lg:text-base lg:font-normal" href="/restore-photos-pro">Restore Photos</a>
                                         </li>
                                         <li>
-                                            <a className="hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100 lg:text-base lg:font-normal" href="/upscale-photos-">Upscale Photos</a>
+                                            <a className="hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100 lg:text-base lg:font-normal" href="/upscale-photos-pro">Upscale Photos</a>
                                         </li>
                                         {/* <li>
                                             <a className="hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100 lg:text-base lg:font-normal" href="/photo-editor">Photo Editor</a>
@@ -348,13 +381,13 @@ export default function NavBar() {
                                             <a className="" href="/remove-background-">Remove Background</a>
                                         </li>
                                         <li className="group flex rounded-md items-center w-full px-2 py-2 text-sm">
-                                            <a className="" href="/generate-background-">Generate Background</a>
+                                            <a className="" href="/generate-background-pro">Generate Background</a>
                                         </li>
                                         <li className="group flex rounded-md items-center w-full px-2 py-2 text-sm">
-                                            <a className="" href="/restore-photos-">Restore Photos</a>
+                                            <a className="" href="/restore-photos-pro">Restore Photos</a>
                                         </li>
                                         <li className="group flex rounded-md items-center w-full px-2 py-2 text-sm">
-                                            <a className="" href="/upscale-photos-">Upscale Photos</a>
+                                            <a className="" href="/upscale-photos-pro">Upscale Photos</a>
                                         </li>
                                         {/* <li className="group flex rounded-md items-center w-full px-2 py-2 text-sm">
                                             <a className="" href="/photo-editor">Photo Editor</a>
@@ -538,150 +571,6 @@ export default function NavBar() {
                 </div>
             ) : null
             }
-            {/* {showUpgrade ? (
-                <div id="showLimiteMessage" className="modal fixed inset-0 z-50 overflow-auto bg-gray-800 bg-opacity-80 items-center justify-center pt-4 px-4 pb-20 text-center sm:block sm:p-0" >
-                    <div className="md:w-2/3 mx-auto inline-block  align-center rounded-lg overflow-hidden shadow-xl  transform transition-all sm:my-8 sm:align-middle bg-white">
-                        <div className="flex items-start justify-between p-4 border-b rounded-t border-gray-600">
-                            <h3 className="text-xl font-semibold text-gray-900"> Upgrade. </h3>
-
-                            <button onClick={() => setShowUpgrade(false)} id="closeModelButton" type="button" className=" text-gray-900 bg-transparent  hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center hover:bg-gray-600 ">
-                                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6">
-                                </path></svg><span className="sr-only">Close</span>
-                            </button>
-                        </div>
-
-                        <div className="justify-center w-auto sm:grid sm:grid-cols-1 md:grid-cols-2 gap-4 p-6">
-                            <div className="p-6 space-y-6 flex flex-col relative">
-                                <p className="text-gray-700 text-left">Need more generations? <b>
-                                    Upgrade to PRO today
-                                </b> and generate 100 image per month with $0.19/image only. Save your best generations on the cloud.</p><div className="flex flex-col">
-                                    <div className="flex">
-                                        <div>
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <div className="col-span-11 text-l flex font-semibold pl-2">
-                                            <span className="font-bold">
-                                                100 images
-                                            </span>
-                                        </div>
-                                    </div>
-
-
-
-                                    <div className="flex">
-                                        <div>
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <div className="col-span-11 text-l flex font-semibold pl-2">
-                                            <span className="font-bold">
-                                                24/6 Support
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="flex">
-                                        <div>
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <div className="col-span-11 text-l flex font-semibold pl-2">
-                                            <span className="font-bold">
-                                                No Watermark
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex">
-                                        <div>
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <div className="col-span-11 text-l flex font-semibold pl-2">
-                                            <span className="font-bold">
-                                                $0.19/image only
-                                            </span>
-                                        </div>
-                                    </div>
-
-
-
-                                </div>
-                                <div className="rounded w-full  flex flex-col   border-solid ">
-                                    <h3 className="text-3xl p-5 text-left pl-6">Gold</h3>
-                                    <div className="flex flex-row items-center pt-3 pl-6 pr-10 gap-3 pb-3 text-primary-500">
-                                        <div className="flex flex-row gap-1 ">
-                                            <span className="text-base"> $ </span>
-                                            <p className="text-5xl font-semibold">19</p>
-                                        </div><p className="font-light text-sm">/ month</p>
-                                    </div>
-                                    <div className=" pl-6 pr-10 gap-3 pb-3 text-left">
-                                        <ul className="text-gray-700 ">
-                                            <li>No advertisements</li>
-                                            <li>Commercial usage of photos</li>
-                                            <li>Premium support</li>
-                                        </ul>
-                                    </div></div>
-                                <a className="w-[200px] plan-btn bg-primary-500 text-white text-base font-semibold py-2 px-4 rounded-lg mt-4 absolute bottom-5" href={checkOutUrll}>Subscribe</a>
-
-
-                            </div>
-
-                            {/**GOLD plan  */}
-
-            {/* <div className="p-6 space-y-6 flex flex-col relative">
-                                <p className="text-left">Need more generations? <b>
-                                    Upgrade to GOLD today
-                                </b> and generate as many images as you want per month. Save your best generations on the cloud.</p><div className="flex flex-col">
-                                    <div className="flex">
-                                        <div>
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <div className="col-span-11 text-l flex font-semibold pl-2 flex-grow">
-                                            <span className="font-bold">
-                                                Unlimited AI Background Generation for the whole month
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="rounded w-full  flex flex-col   border-solid ">
-                                    <h3 className="text-3xl p-5 text-left pl-6">Gold</h3>
-                                    <div className="flex flex-row items-center pt-3 pl-6 pr-10 gap-3 pb-3 text-primary-500">
-                                        <div className="flex flex-row gap-1">
-                                            <span className="text-base"> $ </span>
-                                            <p className="text-5xl font-semibold">49</p>
-                                        </div><p className="font-light text-sm">/ month</p>
-                                    </div>
-                                    <div className=" pl-6 pr-10 gap-3 pb-3 text-left">
-                                        <ul className="text-gray-700 ">
-                                            <li>No advertisements</li>
-                                            <li>Commercial usage of photos</li>
-                                            <li>Premium support</li>
-                                        </ul>
-                                    </div></div>
-
-                                <a className="w-[200px] plan-btn bg-primary-500 text-white text-base font-semibold py-2 px-4 rounded-lg mt-4 absolute bottom-5" href={checkOutUrl}>Subscribe</a>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-            ) : null
-            }  */}
-
-
 
 
         </>

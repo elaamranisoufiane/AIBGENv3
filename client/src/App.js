@@ -15,15 +15,17 @@ const Dashboard = lazy(() => import("./pages/dashborad/dashboard"));
 const RemoveBgPage = lazy(() => import("./pages/dashborad/RemoveBackground"));
 const RestoreImagePage = lazy(() => import("./pages/dashborad/ResotreImage"));
 const UpscaleImagePage = lazy(() => import("./pages/dashborad/UpscaleImage"));
-const ImageEditor = lazy(() => import("./pages/dashborad/ImageEditor"));
+// const ImageEditor = lazy(() => import("./pages/dashborad/ImageEditor"));
 const GenerateBgPage = lazy(() => import("./pages/dashborad/GenerateBackground"));
 //for guests
 const RemoveBgPageGuest = lazy(() => import("./pages/dashboradGuest/RemoveBackground"));
 const RestoreImagePageGuest = lazy(() => import("./pages/dashboradGuest/ResotreImage"));
 const UpscaleImagePageGuest = lazy(() => import("./pages/dashboradGuest/UpscaleImage"));
-const ImageEditorGuest = lazy(() => import("./pages/dashboradGuest/ImageEditor"));
+// const ImageEditorGuest = lazy(() => import("./pages/dashboradGuest/ImageEditor"));
 const GenerateBgPageGuest = lazy(() => import("./pages/dashboradGuest/GenerateBackground"));
 
+//error 404
+const NotFoundPage = lazy(() => import("./pages/More/NotFoundPage"));
 
 const Users = lazy(() => import("./pages/admin/index"));
 const Add = lazy(() => import("./pages/admin/add"));
@@ -102,7 +104,7 @@ const App = () => {
               <Route path="/generate-background" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><GenerateBgPageGuest /></Suspense>} />
               <Route path="/restore-photos" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><RestoreImagePageGuest /></Suspense>} />
               <Route path="/upscale-photos" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><UpscaleImagePageGuest /></Suspense>} />
-              <Route path="/photo-editor" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><ImageEditorGuest /></Suspense>} />
+              {/* <Route path="/photo-editor" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><ImageEditorGuest /></Suspense>} /> */}
               <Route path="/email-verified" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><ValidationEmailSuccess /></Suspense>} />
               <Route path="/email-failed" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><ValidationEmailFail /></Suspense>} />
               <Route path="/forget-password" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><ForgetPassword /></Suspense>} />
@@ -116,11 +118,11 @@ const App = () => {
               <Route path="/dashboard" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><Dashboard /></Suspense>} />
 
 
-              <Route path="/remove-background-" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><RemoveBgPage /></Suspense>} />
-              <Route path="/generate-background-" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><GenerateBgPage /></Suspense>} />
-              <Route path="/restore-photos-" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><RestoreImagePage /></Suspense>} />
-              <Route path="/upscale-photos-" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><UpscaleImagePage /></Suspense>} />
-              <Route path="/photo-editor-" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><ImageEditor /></Suspense>} />
+              <Route path="/remove-background-pro" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><RemoveBgPage /></Suspense>} />
+              <Route path="/generate-background-pro" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><GenerateBgPage /></Suspense>} />
+              <Route path="/restore-photos-pro" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><RestoreImagePage /></Suspense>} />
+              <Route path="/upscale-photos-pro" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><UpscaleImagePage /></Suspense>} />
+              {/* <Route path="/photo-editor-" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><ImageEditor /></Suspense>} /> */}
 
 
 
@@ -154,7 +156,7 @@ const App = () => {
           <Route path="/cookies" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><CookiesSettings /></Suspense>} />
           <Route path="/contactus" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><ContactUs /></Suspense>} />
           <Route path="/overview" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><Overview /></Suspense>} />
-          <Route path="*" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><Home /></Suspense>} />
+          <Route path="*" element={<Suspense fallback={<div className="h-full min-h-screen"> </div>}><NotFoundPage /></Suspense>} />
         </Routes>
       </BrowserRouter>
       <Footer />

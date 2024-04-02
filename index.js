@@ -343,7 +343,7 @@ app.post('/register', (req, res) => {
                                                 if (emailError) {
                                                     throw emailError;
                                                 }
-
+                                                res.status(200).send({ message: 'Email sent' });
                                                 //console.log('Email sent: ' + info.response);
                                             });
                                         });
@@ -369,6 +369,82 @@ app.post('/register', (req, res) => {
         res.send({ message: err });
     }
 });
+
+
+//send verification email multiple times
+
+app.post('/send-verification-link', async (req, res) => {
+    const email = req.body.email;
+    const TokenQuery = 'SELECT verification_token from user WHERE email = ? AND is_verified = 0';
+
+    try {
+        const TokenResult = await new Promise((resolve, reject) => {
+            db.query(TokenQuery, [email], (TokenError, TokenResult) => {
+                if (TokenError) {
+                    reject(TokenError);
+                    return;
+                }
+                resolve(TokenResult);
+            });
+        });
+
+        if (TokenResult.length > 0 && TokenResult[0].verification_token) {
+            // Send verification email
+            const verificationLink = `${process.env.DOMAIN}/verify?token=${TokenResult[0].verification_token}`;
+            const mailOptions = {
+                from: process.env.SMTPEMAIL,
+                to: email,
+                subject: 'Ai Background Generator Email Verification',
+                html: `
+             <!DOCTYPE html>
+             <html lang="en">
+             <head>
+                 <meta charset="UTF-8">
+                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                 <title>Email Verification</title>
+                 <style>
+                     @import url('https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css');
+                 </style>
+             </head>
+             <body class="bg-gray-100">
+             
+                 <div class="container mx-auto px-4 py-8">
+                     <div class="bg-white rounded-lg shadow-md p-6">
+                         <h1 class="text-2xl font-bold text-blue-500 mb-4">Please verify your email address</h1>
+                         <p class="mb-4">Thank you for signing up! To complete your registration, please click the button below to verify your email address:</p>
+                         <a href="${verificationLink}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Verify Email</a>
+                     </div>
+                 </div>
+             
+             </body>
+             </html>
+             `
+            };
+
+            // Create a nodemailer transporter
+            const transporter = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true,
+                auth: {
+                    user: process.env.SMTPEMAIL,
+                    pass: process.env.SMTPPASSWORD
+                }
+            });
+
+            // Send the email
+            await transporter.sendMail(mailOptions);
+            res.status(200).send({ message: true });
+        } else {
+            res.status(200).send({ message: false });
+        }
+    } catch (error) {
+        console.error('Error sending verification link:', error);
+        res.status(500).send({ message: 'Error sending verification link.' });
+    }
+});
+
+
 
 //email verification 
 app.get('/verify', (req, res) => {

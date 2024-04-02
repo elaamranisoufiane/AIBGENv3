@@ -1,30 +1,42 @@
 //'use client';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import DownloadButton from '../dashborad/DownloadButton';
 
 
 const DOMAIN_NAME = window.location.origin;
 
 let selectedfile = null;
 
-//get Plans for Month subscription
-const getPlans = async () => {
-    try {
-        const response = await axios.get('/api/getAllProductssGuest', {
-            withCredentials: true,
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Fetching plans failed:", error);
-    }
-};
 
-
-const plans = await getPlans().then((result) => {
-    return result;
-});
 
 const RemoveBackground = () => {
+
+    const [plans, setPlans] = useState([]);
+    const [showlimitImageSize, setShowlimitImageSize] = useState(false);
+    const [open1, setOpen1] = useState(false);
+    const [open2, setOpen2] = useState(false);
+    const [open3, setOpen3] = useState(false);
+    const [open4, setOpen4] = useState(false);
+    const [open5, setOpen5] = useState(false);
+
+
+    useEffect(() => {
+        const fetchPlans = async () => {
+            try {
+                const response = await axios.get('/api/getAllProductssGuest', {
+                    withCredentials: true,
+                });
+                setPlans(response.data);
+            } catch (error) {
+                console.error("Failed to fetch plans:", error);
+            }
+        };
+
+        fetchPlans();
+    }, []);
+
+
     const [showUpgrade, setShowUpgrade] = useState(false);
     const [isLoading, setIsLoading] = useState(null);
     const [displayrmimage, setDisplayrmimage] = useState(true);
@@ -52,56 +64,68 @@ const RemoveBackground = () => {
     };
 
 
-
     const handleUpload = async () => {
         try {
             const displayResults = document.getElementById('displayResults');
-            //upload image  
+            // Check if an image is selected
             if (!selectedfile) {
                 return;
             }
-            setIsLoading(true);
-            try {
-                initialize()
-                const formData = new FormData();
-                formData.append('image', selectedfile);
-                const response = await axios.post('/upload', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-                if (response.status === 200) {
-                    setImageUrl(DOMAIN_NAME + '/uploads/' + response.data.newImageUrl);
 
-                    const urlSaved = '/uploads/' + response.data.newImageUrl;
-                    axios({
-                        method: "post",
-                        data: {
-                            url: urlSaved,
-                        },
-                        url: "/addImage",
-                        withCredentials: true,
-                    })
-                        .then((data) => {
-                        })
-                        .catch((error) => {
-                            console.error(error);
+            // Check the dimensions of the selected image
+            const image = new Image();
+            image.src = URL.createObjectURL(selectedfile);
+            image.onload = async () => {
+                const width = image.width;
+                const height = image.height;
+
+                if ((width * height) > 3073600) {
+                    setIsLoading(false);
+                    setShowlimitImageSize(true);
+                    setData(null);
+                    return;
+                } else {
+                    // Proceed with uploading the image
+                    setIsLoading(true);
+                    try {
+                        initialize()
+                        const formData = new FormData();
+                        formData.append('image', selectedfile);
+                        const response = await axios.post('/upload', formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
                         });
+                        if (response.status === 200) {
+                            setImageUrl(DOMAIN_NAME + '/uploads/' + response.data.newImageUrl);
 
-                    displayResults.style.display = 'block';
+                            const urlSaved = '/uploads/' + response.data.newImageUrl;
+                            axios({
+                                method: "post",
+                                data: {
+                                    url: urlSaved,
+                                },
+                                url: "/addImage",
+                                withCredentials: true,
+                            })
+                                .then((data) => {
+                                })
+                                .catch((error) => {
+                                    console.error(error);
+                                });
+
+                            displayResults.style.display = 'block';
+                        }
+                    } catch (error) {
+                        setIsLoading(false);
+                        console.error('Error uploading image:', error);
+                    } finally {
+                        setIsLoading(false);
+                    }
                 }
-
-
-            } catch (error) {
-                console.error('Error uploading image:', error);
-
-
-            }
-
+            };
         } catch (error) {
             console.error('Error uploading image:', error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -262,8 +286,14 @@ const RemoveBackground = () => {
                                 />
                             </div>
 
-                            <div className="absolute bottom-0 right-0 m-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
 
+                            <div className="absolute bottom-0 right-0 m-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <DownloadButton
+                                    className="bg-blue-500 text-white flex items-center px-3 py-2 rounded-md mt-2 focus:outline-none"
+                                    imageUrl={data}
+                                    fileName="AIBgen_Image.png"
+                                >
+                                </DownloadButton>
                             </div>
                         </div>
                     ) : <div>
@@ -346,6 +376,113 @@ const RemoveBackground = () => {
                     </div>
                 ) : null
                 }
+
+                {showlimitImageSize ? (
+                    <div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                        <div class="flex items-center justify-center min-h-screen">
+                            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"> </div>
+                            <div class="bg-white rounded-lg p-8 max-w-md w-full mx-auto shadow-xl z-50">
+                                <div class="text-center">
+                                    <div class="flex justify-center items-center mb-4">
+                                        <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <title></title>
+                                                <g id="Complete">
+                                                    <g id="alert-circle">
+                                                        <g>
+                                                            <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="8" y2="12"></line>
+                                                            <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="16" y2="16"></line>
+                                                            <circle cx="12" cy="12" data-name="--Circle" fill="none" id="_--Circle" r="10" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <p class="text-xl text-gray-800 font-bold mb-2">Alert! </p>
+                                    <p class="text-gray-600">The image size exceeds the limit. Please subscribe to process higher size images.</p>
+                                    <div class="mt-6">
+                                        <button type="button" class="bg-red-500 hover:bg-red-600  py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-300 ease-in-out" onClick={() => setShowlimitImageSize(!showlimitImageSize)}>Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
+
+
+
+
+
+                <div className="px-4 py-12 mx-auto sm:max-w-xl md:max-w-full md:px-24 lg:px-8 lg:py-14">
+                    <div className="max-w-xl sm:mx-auto lg:max-w-2xl">
+                        <div className="max-w-xl mb-10 text-center md:mx-auto md:mb-12 lg:max-w-2xl">
+                            <h2 className="max-w-lg mb-6 font-sans font-bold leading-none tracking-tight text-slate-900 text-2xl md:mx-auto lg:text-3xl">Background Removal FAQs</h2>
+                        </div>
+                        <div>
+                            <div className={`border-b ${open1 ? 'open' : ''}`}>
+                                <div className="flex text-lg font-medium py-4 flex-row text-left px-4 w-full items-center justify-between hover:bg-slate-100" onClick={() => setOpen1(!open1)}>
+                                    What is background removal?
+                                </div>
+                                {open1 && (
+                                    <div className="px-4 mb-4 mt-2">
+                                        Background removal is the process of eliminating the background from an image while preserving the main subject or object. It's commonly used to isolate subjects for product photography, create transparent backgrounds for graphics, and improve the visual focus of images.
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className={`border-b ${open2 ? 'open' : ''}`}>
+                                <div className="flex text-lg font-medium py-4 flex-row text-left px-4 w-full items-center justify-between hover:bg-slate-100" onClick={() => setOpen2(!open2)}>
+                                    Why should I remove backgrounds from images?
+                                </div>
+                                {open2 && (
+                                    <div className="px-4 mb-4 mt-2">
+                                        Removing backgrounds from images offers several benefits, including enhancing product presentations by eliminating distractions, creating consistent and professional-looking graphics, and enabling versatile usage of images in various design projects.
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className={`border-b ${open3 ? 'open' : ''}`}>
+                                <div className="flex text-lg font-medium py-4 flex-row text-left px-4 w-full items-center justify-between hover:bg-slate-100" onClick={() => setOpen3(!open3)}>
+                                    What types of images can have backgrounds removed?
+                                </div>
+                                {open3 && (
+                                    <div className="px-4 mb-4 mt-2">
+                                        Backgrounds can be removed from various types of images, including product photos, portraits, landscapes, and graphics. The effectiveness of background removal may vary depending on factors such as image complexity, subject clarity, and background contrast.
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className={`border-b ${open4 ? 'open' : ''}`}>
+                                <div className="flex text-lg font-medium py-4 flex-row text-left px-4 w-full items-center justify-between hover:bg-slate-100" onClick={() => setOpen4(!open4)}>
+                                    Can I use images with removed backgrounds for commercial purposes?
+                                </div>
+                                {open4 && (
+                                    <div className="px-4 mb-4 mt-2">
+                                        Yes, you can use images with removed backgrounds for commercial purposes, provided you have the legal right to use and distribute the edited images. It's essential to ensure compliance with copyright laws and licensing agreements when using such images for commercial use.
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className={`border-b ${open5 ? 'open' : ''}`}>
+                                <div className="flex text-lg font-medium py-4 flex-row text-left px-4 w-full items-center justify-between hover:bg-slate-100" onClick={() => setOpen5(!open5)}>
+                                    How can I contact customer support?
+                                </div>
+                                {open5 && (
+                                    <div className="px-4 mb-4 mt-2">
+                                        You can contact our customer support team by emailing apps127@yahoo.in.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
 
 
             </div>
