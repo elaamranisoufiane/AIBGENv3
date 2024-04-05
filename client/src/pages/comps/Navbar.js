@@ -378,7 +378,7 @@ export default function NavBar() {
                                 {username ? (
                                     <>
                                         <li className="group flex rounded-md items-center w-full px-2 py-2 text-sm">
-                                            <a className="" href="/remove-background-">Remove Background</a>
+                                            <a className="" href="/remove-background-pro">Remove Background</a>
                                         </li>
                                         <li className="group flex rounded-md items-center w-full px-2 py-2 text-sm">
                                             <a className="" href="/generate-background-pro">Generate Background</a>

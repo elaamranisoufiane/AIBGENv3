@@ -108,6 +108,8 @@ const RestoreImage = () => {
 
     const [plans, setPlans] = useState([]);
     const [plansPayment, setPlansPayment] = useState([]);
+    const [showlimitImageSize, setShowlimitImageSize] = useState(false);
+
 
     useEffect(() => {
         const fetchPlans = async () => {
@@ -227,44 +229,60 @@ const RestoreImage = () => {
                 if (!selectedfile) {
                     return;
                 }
-                setIsLoading(true);
-                try {
-                    initialize()
-                    const formData = new FormData();
-                    formData.append('image', selectedfile);
-                    const response = await axios.post('/upload', formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    });
-                    if (response.status === 200) {
-                        setImageUrl(DOMAIN_NAME + '/uploads/' + response.data.newImageUrl);
 
-                        const urlSaved = '/uploads/' + response.data.newImageUrl;
-                        axios({
-                            method: "post",
-                            data: {
-                                url: urlSaved,
-                                id_user: userId
-                            },
-                            url: "/addImage",
-                            withCredentials: true,
-                        })
-                            .then((data) => {
-                            })
-                            .catch((error) => {
-                                console.error(error);
+                // Check the dimensions of the selected image
+                const image = new Image();
+                image.src = URL.createObjectURL(selectedfile);
+                image.onload = async () => {
+                    const width = image.width;
+                    const height = image.height;
+                    if ((width * height) > 3073600 && isProS !== 'true') {
+                        setIsLoading(false);
+                        setShowlimitImageSize(true);
+                        setData(null);
+                        return;
+                    } else {
+
+                        setIsLoading(true);
+                        try {
+                            initialize()
+                            const formData = new FormData();
+                            formData.append('image', selectedfile);
+                            const response = await axios.post('/upload', formData, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data',
+                                },
                             });
+                            if (response.status === 200) {
+                                setImageUrl(DOMAIN_NAME + '/uploads/' + response.data.newImageUrl);
 
-                        displayResults.style.display = 'block';
+                                const urlSaved = '/uploads/' + response.data.newImageUrl;
+                                axios({
+                                    method: "post",
+                                    data: {
+                                        url: urlSaved,
+                                        id_user: userId
+                                    },
+                                    url: "/addImage",
+                                    withCredentials: true,
+                                })
+                                    .then((data) => {
+                                    })
+                                    .catch((error) => {
+                                        console.error(error);
+                                    });
+
+                                displayResults.style.display = 'block';
+                            }
+
+
+                        } catch (error) {
+                            console.error('Error uploading image:', error);
+                        } finally {
+                            setIsLoading(false);
+                        }
                     }
-
-
-                } catch (error) {
-                    console.error('Error uploading image:', error);
-
-
-                }
+                };
             }
         } catch (error) {
             console.error('Error uploading image:', error);
@@ -689,6 +707,49 @@ const RestoreImage = () => {
                     </div>
                 ) : null
                 }
+
+
+
+
+
+                {showlimitImageSize ? (
+                    <div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                        <div class="flex items-center justify-center min-h-screen">
+                            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"> </div>
+                            <div class="bg-white rounded-lg p-8 max-w-md w-full mx-auto shadow-xl z-50">
+                                <div class="text-center">
+                                    <div class="flex justify-center items-center mb-4">
+                                        <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <title></title>
+                                                <g id="Complete">
+                                                    <g id="alert-circle">
+                                                        <g>
+                                                            <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="8" y2="12"></line>
+                                                            <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="16" y2="16"></line>
+                                                            <circle cx="12" cy="12" data-name="--Circle" fill="none" id="_--Circle" r="10" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <p class="text-xl text-gray-800 font-bold mb-2">Alert! </p>
+                                    <p class="text-gray-600">The image size exceeds the limit. Please subscribe to process higher size images.</p>
+                                    <div class="mt-6">
+                                        <button type="button" class="bg-red-500 hover:bg-red-600  py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-300 ease-in-out" onClick={() => setShowlimitImageSize(!showlimitImageSize)}>Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
+
+
+
+
 
             </div>
 

@@ -38,7 +38,7 @@ const ForgotPasswordForm = () => {
     }, []); // Empty dependency array ensures useEffect runs only once after the component mounts
 
     return (
-        <>
+        <main className={plans.length > 0 ? "max-w-3/4 h-full flex   flex-col items-center min-h-screen" : ""}>
             <div className="flex justify-center min-h-screen mt-11">
                 <div className="bg-white p-2 rounded-lg shadow-lg w-5/6 h-auto" >
                     <div>
@@ -51,7 +51,7 @@ const ForgotPasswordForm = () => {
 
 
 
-                    <div className="justify-center sm:grid sm:grid-cols-1 lg:flex pt-8 pb-8">
+                    <div className="justify-center w-auto sm:grid sm:grid-cols-1 lg:flex pt-8 pb-8">
                         {plans.map(plan => (
                             <div key={plan.id} className="pricing-card flex flex-col border border-gray-300 rounded-lg p-6 text-center hover:shadow-md w-full mb-12 lg:w-1/4 lg:mb-0 lg:ml-2">
                                 <h2 className="plan-name text-xl text-black font-semibold mb-4">{plan.name}</h2>
@@ -340,7 +340,7 @@ const ForgotPasswordForm = () => {
 
 
 
-        </>
+        </main >
     );
 };
 

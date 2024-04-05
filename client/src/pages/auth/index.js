@@ -1,11 +1,11 @@
 //'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import gfx1Image from '../../assets/gfx1.png'
-import gfx8Image from '../../assets/gfx8.png'
-import gfx3Image from '../../assets/gfx3.png'
-import gfx4Image from '../../assets/gfx4.png'
-import gfx5Image from '../../assets/gfx5.png'
-import gfx6Image from '../../assets/gfx6.png'
+import gfx1Image from '../../assets/gfx1.webp'
+import gfx8Image from '../../assets/gfx8.webp'
+import gfx3Image from '../../assets/gfx3.webp'
+import gfx4Image from '../../assets/gfx4.webp'
+import gfx5Image from '../../assets/gfx5.webp'
+import gfx6Image from '../../assets/gfx6.webp'
 import gfx7Image from '../../assets/gfx7.png'
 import img_100 from '../../assets/img_100.jpeg'
 import img_100_1 from '../../assets/img_100_1.jpeg'
